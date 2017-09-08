@@ -1,13 +1,13 @@
 ﻿//----------------------------------------------------------------------- 
-// PDS WITSMLstudio Store, 2017.1
+// PDS WITSMLstudio Store, 2017.2
 //
-// Copyright 2017 Petrotechnical Data Systems
+// Copyright 2017 PDS Americas LLC
 // 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// Licensed under the PDS Open Source WITSML Product License Agreement (the
+// "License"); you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //   
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.pds.group/WITSMLstudio/OpenSource/ProductLicenseAgreement
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -169,8 +169,7 @@ namespace PDS.WITSMLstudio.Store.Data.Channels
                       );
 
                 // Get DataChannelChunk list from database for the computed range and URI
-                var filter = BuildDataFilter(reader.Uri, indexChannel.Mnemonic, chunkRange, increasing);
-                var results = GetData(filter, increasing);
+                var results = GetData(reader.Uri, indexChannel.Mnemonic, chunkRange, increasing);
 
                 // Backup existing chunks for the transaction
                 AttachChunks(results);
@@ -830,7 +829,7 @@ namespace PDS.WITSMLstudio.Store.Data.Channels
         /// <param name="filter">The data filter.</param>
         /// <param name="ascending">if set to <c>true</c> the data will be sorted in ascending order.</param>
         /// <returns>The list of channel data chunks that fit the query criteria sorted by the primary index.</returns>
-        private List<ChannelDataChunk> GetData(FilterDefinition<ChannelDataChunk> filter, bool ascending)
+        internal List<ChannelDataChunk> GetData(FilterDefinition<ChannelDataChunk> filter, bool ascending)
         {
             var collection = GetCollection();
             var sortBuilder = Builders<ChannelDataChunk>.Sort;
@@ -860,7 +859,7 @@ namespace PDS.WITSMLstudio.Store.Data.Channels
         /// <param name="range">The request range.</param>
         /// <param name="ascending">if set to <c>true</c> the data will be sorted in ascending order.</param>
         /// <returns>The query filter.</returns>
-        private FilterDefinition<ChannelDataChunk> BuildDataFilter(string uri, string indexChannel, Range<double?> range, bool ascending)
+        internal FilterDefinition<ChannelDataChunk> BuildDataFilter(string uri, string indexChannel, Range<double?> range, bool ascending)
         {
             var builder = Builders<ChannelDataChunk>.Filter;
             var filters = new List<FilterDefinition<ChannelDataChunk>>();

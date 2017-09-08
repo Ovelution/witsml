@@ -1,13 +1,13 @@
 ﻿//----------------------------------------------------------------------- 
-// PDS WITSMLstudio Store, 2017.1
+// PDS WITSMLstudio Store, 2017.2
 //
-// Copyright 2017 Petrotechnical Data Systems
+// Copyright 2017 PDS Americas LLC
 // 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// Licensed under the PDS Open Source WITSML Product License Agreement (the
+// "License"); you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //   
-//     http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.pds.group/WITSMLstudio/OpenSource/ProductLicenseAgreement
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -138,9 +138,16 @@ namespace PDS.WITSMLstudio.Store.Data
 
             if (childType != null && childType != typeof(string))
             {
-                var version = ObjectTypes.GetVersion(childType);
-                var validator = Container.Resolve<IRecurringElementValidator>(new ObjectName(childType.Name, version));
-                validator?.Validate(Context.Function, childType, items, elementList);
+                try
+                {
+                    var version = ObjectTypes.GetVersion(childType);
+                    var validator = Container.Resolve<IRecurringElementValidator>(new ObjectName(childType.Name, version));
+                    validator?.Validate(Context.Function, childType, items, elementList);
+                }
+                catch (ContainerException)
+                {
+                    Logger.DebugFormat("{0} not configured for type: {1}", typeof(IRecurringElementValidator).Name, childType);
+                }
             }
 
             UpdateArrayElementsWithoutUid(elementList, propertyInfo, items, childType, propertyPath);
